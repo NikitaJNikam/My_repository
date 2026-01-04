@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Live Peacock Dance Painting</title>
+<style>
+  body {
+    margin: 0;
+    background: linear-gradient(#87ceeb, #e0ffe0);
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let t = 0;
+
+function drawBackground() {
+  // Sky
+  ctx.fillStyle = "#87ceeb";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Grass
+  ctx.fillStyle = "#3cb371";
+  ctx.fillRect(0, canvas.height * 0.75, canvas.width, canvas.height);
+}
+
+function drawPeacock(x, y) {
+  const dance = Math.sin(t) * 10;
+
+  // Body
+  ctx.fillStyle = "#0b3d91";
+  ctx.beginPath();
+  ctx.ellipse(x, y + dance, 30, 60, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Neck
+  ctx.fillRect(x - 10, y - 80 + dance, 20, 60);
+
+  // Head
+  ctx.beginPath();
+  ctx.arc(x, y - 95 + dance, 15, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Beak
+  ctx.fillStyle = "gold";
+  ctx.beginPath();
+  ctx.moveTo(x + 15, y - 95 + dance);
+  ctx.lineTo(x + 35, y - 90 + dance);
+  ctx.lineTo(x + 15, y - 85 + dance);
+  ctx.fill();
+
+  // Feathers
+  for (let i = 0; i < 30; i++) {
+    const angle = (-Math.PI / 2) + (i - 15) * 0.12;
+    const wave = Math.sin(t + i) * 15;
+    const length = 200 + wave;
+
+    const fx = x + Math.cos(angle) * length;
+    const fy = y + Math.sin(angle) * length + dance;
+
+    ctx.strokeStyle = `hsl(${160 + i * 4}, 80%, 45%)`;
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y + dance);
+    ctx.lineTo(fx, fy);
+    ctx.stroke();
+
+    // Feather eye
+    ctx.fillStyle = "royalblue";
+    ctx.beginPath();
+    ctx.arc(fx, fy, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "gold";
+    ctx.beginPath();
+    ctx.arc(fx, fy, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBackground();
+  drawPeacock(canvas.width / 2, canvas.height * 0.75);
+  t += 0.05;
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
+
